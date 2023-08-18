@@ -3,6 +3,15 @@
 1	844	7140562200555006	CMakeFiles/Main.dir/main.cpp.obj	10362814fc4008c2
 845	1073	7140562202379855	Main.exe	6dc550e1df5810e7
 1	1646	7140564058665198	CMakeFiles/Rasterizer.dir/main.cpp.obj	42f5d17c06528119
+3	630	7140567110658728	Rasterizer.exe	80f344c4f9100091
 7	1761	7140564059835614	CMakeFiles/Rasterizer.dir/rasterizer.cpp.obj	aff7609d1ff666ba
 2	747	7140564273367777	CMakeFiles/Rasterizer.dir/Triangle.cpp.obj	18b712537b60bada
-3	630	7140567110658728	Rasterizer.exe	80f344c4f9100091
+6	1112	7140663378000171	CMakeFiles/Rasterizer.dir/Triangle.cpp.obj	18b712537b60bada
+2	1877	7140663385622198	CMakeFiles/Rasterizer.dir/main.cpp.obj	42f5d17c06528119
+2	1742	7140665822720324	CMakeFiles/Rasterizer.dir/rasterizer.cpp.obj	aff7609d1ff666ba
+1743	2273	7140665827565867	Rasterizer.exe	80f344c4f9100091
+2	1831	7140668632050404	CMakeFiles/Rasterizer.dir/rasterizer.cpp.obj	aff7609d1ff666ba
+1832	2059	7140668633961654	Rasterizer.exe	80f344c4f9100091
+4	2016	7140670659990148	CMakeFiles/Rasterizer.dir/main.cpp.obj	42f5d17c06528119
+9	2284	7140670662653394	CMakeFiles/Rasterizer.dir/rasterizer.cpp.obj	aff7609d1ff666ba
+2284	2678	7140670666210101	Rasterizer.exe	80f344c4f9100091
