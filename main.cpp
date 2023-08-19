@@ -70,10 +70,10 @@ int main(int argc, const char** argv)
 
     rst::rasterizer r(700, 700);
 
-    Eigen::Vector3f eye_pos = {0,0,5};
+    Eigen::Vector3f eye_pos = {0,0,1};
 
 
-    std::vector<Eigen::Vector3f> pos
+    /*std::vector<Eigen::Vector3f> pos
             {
                     {2, 0, -2},
                     {0, 2, -2},
@@ -81,6 +81,15 @@ int main(int argc, const char** argv)
                     {3.5, -1, -5},
                     {2.5, 1.5, -5},
                     {-1, 0.5, -5}
+            };*/
+    std::vector<Eigen::Vector3f> pos
+            {
+                    {20, 0, -2},
+                    {0, 20, -2},
+                    {-20, 0, -2},
+                    {35, -10, -5},
+                    {25, 15, -5},
+                    {-10, 5, -5}
             };
 
     std::vector<Eigen::Vector3i> ind

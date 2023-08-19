@@ -150,14 +150,31 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t) {
 
     // iterate through the pixel and find if the current pixel is inside the triangle
 
+    //SMAA µœ÷
+    std::vector<Eigen::Vector2f> super_sample_step
+    {
+        {0.25,0.25},
+        {0.75,0.25},
+        {0.25,0.75},
+        {0.75,0.75},
+    };
+
     for(int x = x_min;x<x_max;x++)
         for (int y = y_min; y < y_max; y++) 
         {
-            if (insideTriangle(x+0.5, y+0.5, t.v)) 
+            int count = 0;
+            for (int i = 0; i < 4; i++)
+            {
+                if (insideTriangle(x + super_sample_step[i].x(), y + super_sample_step[i].x(), t.v))
+                {
+                    count++ ;
+                }
+            }
+            if (count>0) 
             {
                 // If so, use the following code to get the interpolated z value.
                 //auto[alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
-                std::tuple<float, float, float> tmp= computeBarycentric2D(x, y, t.v);
+                std::tuple<float, float, float> tmp= computeBarycentric2D((float)x+0.5, (float)y + 0.5, t.v);
                 float alpha = std::get<0>(tmp);
                 float beta = std::get<1>(tmp);
                 float gamma = std::get<2>(tmp);
@@ -171,6 +188,8 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t) {
                 if(z_interpolated < depth_buf[index])
                 { 
                     // TODO : set the current pixel (use the set_pixel function) to the color of the triangle (use getColor function) if it should be painted.
+                    //Vector3f color = t.getColor() * count / 4; //t.getColor()* count / 4.0f + (4 - count) * frame_buf[get_index(x, y)] / 4.0f
+
                     set_pixel(Vector3f(x, y, z_interpolated), t.getColor());
                     depth_buf[index] = z_interpolated;
                 }
