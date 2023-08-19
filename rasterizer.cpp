@@ -9,6 +9,7 @@
 #include <opencv2/opencv.hpp>
 #include <math.h>
 
+
 rst::pos_buf_id rst::rasterizer::load_positions(const std::vector<Eigen::Vector3f> &positions)
 {
     auto id = get_next_id();
@@ -38,16 +39,14 @@ auto to_vec4(const Eigen::Vector3f& v3, float w = 1.0f)
     return Vector4f(v3.x(), v3.y(), v3.z(), w);
 }
 
-
 static bool insideTriangle(float x, float y, const Vector3f* _v)
-{   
-    // TODO : Implement this function to check if the point (x, y) is inside the triangle represented by _v[0], _v[1], _v[2]
-
+{
+    // 0 means negative, 1 means positive
     int flag = -1;
 
     for (int i = 0; i < 3; i++) {
         // the current point
-        Eigen::Vector3f p0 = { x, y, 0.0 };
+        Eigen::Vector3f p0 = { x, y, 0 };
         // the 1st vertex
         Eigen::Vector3f p1 = _v[i];
         // the 2nd vertex
@@ -68,7 +67,6 @@ static bool insideTriangle(float x, float y, const Vector3f* _v)
     }
 
     return true;
-
 }
 
 static std::tuple<float, float, float> computeBarycentric2D(float x, float y, const Vector3f* v)
@@ -131,72 +129,45 @@ void rst::rasterizer::draw(pos_buf_id pos_buffer, ind_buf_id ind_buffer, col_buf
 //Screen space rasterization
 void rst::rasterizer::rasterize_triangle(const Triangle& t) {
     auto v = t.toVector4();
-    
-    // TODO : Find out the bounding box of current triangle.
-   
 
-    float x_min = width;
-    float x_max = 0;
-    float y_min = height;
-    float y_max = 0;
+    float min_x = width;
+    float max_x = 0;
+    float min_y = height;
+    float max_y = 0;
 
     // find out the bounding box of current triangle
     for (int i = 0; i < 3; i++) {
-        x_min = std::min(v[i].x(), x_min);
-        x_max = std::max(v[i].x(), x_max);
-        y_min = std::min(v[i].y(), y_min);
-        y_max = std::max(v[i].y(), y_max);
+        min_x = std::min(v[i].x(), min_x);
+        max_x = std::max(v[i].x(), max_x);
+        min_y = std::min(v[i].y(), min_y);
+        max_y = std::max(v[i].y(), max_y);
     }
 
-    // iterate through the pixel and find if the current pixel is inside the triangle
+    // iterate through the pixel
+    for (int y = min_y; y < max_y; y++) {
+        for (int x = min_x; x < max_x; x++) {
 
-    //SMAAÊµÏÖ
-    std::vector<Eigen::Vector2f> super_sample_step
-    {
-        {0.25,0.25},
-        {0.75,0.25},
-        {0.25,0.75},
-        {0.75,0.75},
-    };
-
-    for(int x = x_min;x<x_max;x++)
-        for (int y = y_min; y < y_max; y++) 
-        {
-            int count = 0;
-            for (int i = 0; i < 4; i++)
-            {
-                if (insideTriangle(x + super_sample_step[i].x(), y + super_sample_step[i].x(), t.v))
-                {
-                    count++ ;
-                }
-            }
-            if (count>0) 
-            {
-                // If so, use the following code to get the interpolated z value.
-                //auto[alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
-                std::tuple<float, float, float> tmp= computeBarycentric2D((float)x+0.5, (float)y + 0.5, t.v);
-                float alpha = std::get<0>(tmp);
-                float beta = std::get<1>(tmp);
-                float gamma = std::get<2>(tmp);
-
-                float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
+            // find if the current pixel is inside the triangle
+            if (insideTriangle(x + 0.5, y + 0.5, t.v)) {
+                // if so, use the following code to get the interpolated z value.
+                auto [alpha, beta, gamma] = computeBarycentric2D(x + 0.5, y + 0.5, t.v);
+                float w_reciprocal = 1.0 / (alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
                 float z_interpolated = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
                 z_interpolated *= w_reciprocal;
 
+                // set the current pixel (use the set_pixel function) 
+                // to the color of the triangle (use getColor function)
+                // if it should be painted.
                 int index = get_index(x, y);
-
-                if(z_interpolated < depth_buf[index])
-                { 
-                    // TODO : set the current pixel (use the set_pixel function) to the color of the triangle (use getColor function) if it should be painted.
-                    //Vector3f color = t.getColor() * count / 4; //t.getColor()* count / 4.0f + (4 - count) * frame_buf[get_index(x, y)] / 4.0f
-
-                    set_pixel(Vector3f(x, y, z_interpolated), t.getColor());
+                if (z_interpolated < depth_buf[index]) {
+                    Eigen::Vector3f p;
+                    p << x, y, z_interpolated;
+                    set_pixel(p, t.getColor());
                     depth_buf[index] = z_interpolated;
                 }
-                
             }
         }
-
+    }
 }
 
 void rst::rasterizer::set_model(const Eigen::Matrix4f& m)

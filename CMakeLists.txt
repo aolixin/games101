@@ -5,6 +5,7 @@ cmake_minimum_required (VERSION 3.8)
 
 project ("game101_cmake")
 
+set(CMAKE_CXX_STANDARD 17)
 
 # м╥нд╪Ч
 include_directories(F:/document/visualPlugin/opencv/build/include)

@@ -28,32 +28,39 @@ Eigen::Matrix4f get_model_matrix(float rotation_angle)
     return model;
 }
 
-Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio, float zNear, float zFar)
+Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
+    float zNear, float zFar)
 {
     Eigen::Matrix4f projection = Eigen::Matrix4f::Identity();
 
-    // TODO: Implement this function
-    // Create the projection matrix for the given parameters.
-    // Then return it.
-    Matrix4f pro2ortho;
-    pro2ortho << zNear, 0, 0, 0,
+    Eigen::Matrix4f M_p = Eigen::Matrix4f::Identity();//这个是投影转正交矩阵
+    M_p << zNear, 0, 0, 0,
         0, zNear, 0, 0,
-        0, 0, zNear + zFar, -zNear * zFar,
+        0, 0, zNear + zFar, (-1.0 * zNear * zFar),
         0, 0, 1, 0;
-
+    //[l,r]   [b,t]    [f,n]
     float angle = eye_fov * MY_PI / 180;     //求角度
     float t = tan(angle / 2) * -zNear;      //更具直角三角形性质求tb（高）
     float b = -1.0 * t;
     float r = t * aspect_ratio;           //根据宽高比求（宽）
     float l = -1.0 * r;
 
-    Matrix4f ortho2canonical;
-    ortho2canonical << 1, 0, 0, -1.0 * (r + l) / 2,
-        0, 1, 0, -1.0 * (t + b) / 2,
-        0, 0, 1, -1.0 * (zNear + zFar) / 2,
+    Eigen::Matrix4f M_s = Eigen::Matrix4f::Identity(); //这个是将立方体进行规范化（-1，1）
+    M_s << 2 / (r - l), 0, 0, 0,
+        0, 2 / (t - b), 0, 0,
+        0, 0, 2 / (zNear - zFar), 0,
         0, 0, 0, 1;
 
-    return  ortho2canonical * pro2ortho * projection;
+    Eigen::Matrix4f M_t = Eigen::Matrix4f::Identity(); //这里是将三角形位移到原点
+    M_t << 1, 0, 0, (-1.0)* (r + l) / 2,
+        0, 1, 0, (-1.0)* (t + b) / 2,
+        0, 0, 1, (-1.0)* (zNear + zFar) / 2,
+        0, 0, 0, 1;
+    projection = M_s * M_t * M_p * projection;   //这里是左乘所以是先进行透视转正交，然后位移，然后规范化
+    //projection = projection*M_p*M_t*M_s;
+
+    return projection;
+
 }
 
 int main(int argc, const char** argv)
@@ -70,10 +77,10 @@ int main(int argc, const char** argv)
 
     rst::rasterizer r(700, 700);
 
-    Eigen::Vector3f eye_pos = {0,0,1};
+    Eigen::Vector3f eye_pos = {0,0,5};
 
 
-    /*std::vector<Eigen::Vector3f> pos
+    std::vector<Eigen::Vector3f> pos
             {
                     {2, 0, -2},
                     {0, 2, -2},
@@ -81,15 +88,6 @@ int main(int argc, const char** argv)
                     {3.5, -1, -5},
                     {2.5, 1.5, -5},
                     {-1, 0.5, -5}
-            };*/
-    std::vector<Eigen::Vector3f> pos
-            {
-                    {20, 0, -2},
-                    {0, 20, -2},
-                    {-20, 0, -2},
-                    {35, -10, -5},
-                    {25, 15, -5},
-                    {-10, 5, -5}
             };
 
     std::vector<Eigen::Vector3i> ind
