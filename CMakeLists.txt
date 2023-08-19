@@ -16,6 +16,6 @@ link_directories(F:/document/visualPlugin/opencv/build/x64/vc15/lib)
 # 将 OpenCV 库链接到可执行文件
 
 # 将源代码添加到此项目的可执行文件。
-add_executable(Rasterizer main.cpp rasterizer.hpp rasterizer.cpp global.hpp Triangle.hpp Triangle.cpp Texture.hpp Texture.cpp Shader.hpp OBJ_Loader.h)
+add_executable(Rasterizer main.cpp rasterizer.hpp rasterizer.cpp global.hpp Triangle.hpp Triangle.cpp)
 target_link_libraries(Rasterizer ${OpenCV_LIBS} opencv_world3415d.lib)
 # TODO: 如有需要，请添加测试并安装目标。

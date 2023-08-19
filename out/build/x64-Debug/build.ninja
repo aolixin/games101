@@ -78,14 +78,6 @@ build CMakeFiles\Rasterizer.dir\Triangle.cpp.obj: CXX_COMPILER__Rasterizer_Debug
   TARGET_COMPILE_PDB = CMakeFiles\Rasterizer.dir\
   TARGET_PDB = Rasterizer.pdb
 
-build CMakeFiles\Rasterizer.dir\Texture.cpp.obj: CXX_COMPILER__Rasterizer_Debug ..\..\..\Texture.cpp || cmake_object_order_depends_target_Rasterizer
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
-  INCLUDES = -IF:\document\visualPlugin\opencv\build\include -IF:\document\visualPlugin\eigen-3.4.0
-  OBJECT_DIR = CMakeFiles\Rasterizer.dir
-  OBJECT_FILE_DIR = CMakeFiles\Rasterizer.dir
-  TARGET_COMPILE_PDB = CMakeFiles\Rasterizer.dir\
-  TARGET_PDB = Rasterizer.pdb
-
 
 # =============================================================================
 # Link build statements for EXECUTABLE target Rasterizer
@@ -94,7 +86,7 @@ build CMakeFiles\Rasterizer.dir\Texture.cpp.obj: CXX_COMPILER__Rasterizer_Debug 
 #############################################
 # Link the executable Rasterizer.exe
 
-build Rasterizer.exe: CXX_EXECUTABLE_LINKER__Rasterizer_Debug CMakeFiles\Rasterizer.dir\main.cpp.obj CMakeFiles\Rasterizer.dir\rasterizer.cpp.obj CMakeFiles\Rasterizer.dir\Triangle.cpp.obj CMakeFiles\Rasterizer.dir\Texture.cpp.obj
+build Rasterizer.exe: CXX_EXECUTABLE_LINKER__Rasterizer_Debug CMakeFiles\Rasterizer.dir\main.cpp.obj CMakeFiles\Rasterizer.dir\rasterizer.cpp.obj CMakeFiles\Rasterizer.dir\Triangle.cpp.obj
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = opencv_world3415d.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
